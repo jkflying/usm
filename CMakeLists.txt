@@ -4,5 +4,3 @@ set (CMAKE_CXX_STANDARD 11)
 project(state_machine)
 
 add_executable(usm_test test/usm_test.cpp)
-
-#install(TARGETS state_machine RUNTIME DESTINATION bin)
