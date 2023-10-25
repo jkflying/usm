@@ -26,6 +26,17 @@ class Decision:
         self.condition = condition
         self.transition = transition
 
+class EdgeColors:
+    names = {}
+    colors = ["crimson", "dodgerblue", "darkorange", "forestgreen", "gold", "deeppink", "grey"]
+    configured = 0
+    def get_color(self, name):
+        if not name in self.names.keys():
+            self.names[name] = self.colors[self.configured]
+            if self.configured < len(self.colors):
+                self.configured += 1
+        return self.names[name]
+
 def extract_first_wrapped(table_string, key, open_char="(", close_char=")"):
     try:
         start = table_string.index(key)
@@ -142,6 +153,8 @@ def extract_implicit_transitions(functions):
 def make_dot_file_string(transitions, functions):
     output = []
     output.append("digraph {")
+    edge_colors = EdgeColors()
+
     for t in transitions:
         weight = 1
         if t.style == NORMAL:
@@ -170,10 +183,12 @@ def make_dot_file_string(transitions, functions):
 
         output.append("    \"{start}\" -> \"{end}\" [label=\"{name}\", "
                                                     "style=\"{style}\", "
+                                                    "color=\"{color}\", "
                                                     "weight={weight}]".format(start=t.start + start_extension,
                                                                               end=t.end + end_extension,
                                                                               name=t.edge_name + name_extension,
                                                                               style=style,
+                                                                              color=edge_colors.get_color(t.edge_name),
                                                                               weight=weight))
     output.append("}")
     return "\n".join(output)
